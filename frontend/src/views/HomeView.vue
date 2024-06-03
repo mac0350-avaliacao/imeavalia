@@ -12,7 +12,6 @@
           multiple
           persistent-hint
         ></v-select>
-        {{ selectedDisciplines }}
       </div>
       <div class="disciplineReview">
         <div v-for="type in reviewTypes" :key="type">
@@ -29,7 +28,6 @@
       <div>
         <p>
           Quantas horas por semana você dedica ao estudo dessa disciplina? <br />
-          {{ disciplineHours }}
         </p>
         <v-radio-group v-model="disciplineHours">
           <v-radio label="1h ou menos" value="1 horas ou menos"></v-radio>
@@ -42,7 +40,6 @@
         <p>
           Quanto a sua presença nas aulas e realização de atividades propostas, você diria que
           <br />
-          {{ disciplinePresence }}
         </p>
         <v-radio-group v-model="disciplinePresence">
           <v-radio label="muito ruim" value="muito ruim"></v-radio>
@@ -65,11 +62,9 @@ Muito ruim, ruim, boa, Muito boa)
 <script>
 export default {
   data: () => ({
-    disciplinesReview: [0, 0, 0, 0],
     disciplineHours: '',
     disciplinePresence: '',
     selectedDisciplines: [],
-    value: 0,
     reviewColors: ['red', '#DC143C', 'green', 'blue'],
     disciplines: [
       'MAC0101 	Integração na Universidade e na Profissão',
