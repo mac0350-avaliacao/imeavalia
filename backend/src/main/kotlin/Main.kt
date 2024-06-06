@@ -15,7 +15,6 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import models.*
 import routes.avaliacoesRoutes
 import routes.disciplinasRoutes
-import routes.testesRoutes
 
 fun main() {
     embeddedServer(Netty, port = 8081, module = Application::module).start(wait = true)
@@ -43,6 +42,5 @@ fun Application.module() {
     routing {
         disciplinasRoutes()
         avaliacoesRoutes()
-        testesRoutes()
     }
 }
