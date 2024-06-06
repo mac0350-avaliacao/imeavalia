@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm") version "1.9.23"
+    id("io.ktor.plugin") version "2.3.11"
 }
 
 group = "br.com.imeavalia"
@@ -10,6 +11,15 @@ repositories {
 }
 
 dependencies {
+    // Ktor
+    implementation("io.ktor:ktor-server-core:2.3.11")
+    implementation("io.ktor:ktor-serialization-gson:2.3.11")
+    implementation("io.ktor:ktor-server-netty:2.3.11")
+    implementation("io.ktor:ktor-server-content-negotiation:2.3.11")
+    implementation("io.ktor:ktor-serialization:2.3.11")
+    implementation("io.ktor:ktor-server-cors:2.3.11")
+    testImplementation("io.ktor:ktor-server-tests:2.3.11")
+
     // Exposed framework
     implementation("org.jetbrains.exposed:exposed-core:0.35.3")
     implementation("org.jetbrains.exposed:exposed-dao:0.35.3")

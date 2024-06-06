@@ -6,17 +6,15 @@ import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
 
 
-object Avaliacao : IntIdTable("avaliacoes") {
-    val disciplina_id = integer("disciplina")
-    val materialDidatico = enumerationByName("materialDidatico", 9, Nota::class)
-    val didaticaProfessor = enumerationByName("didaticaProfessor", 9, Nota::class)
-    val metodoAvaliativo = enumerationByName("metodoAvaliativo", 9, Nota::class)
+object Avaliacoes : IntIdTable("avaliacoes") {
+    val disciplinaId = integer("disciplina_id")
+    val materialDidatico = enumerationByName("material_didatico", 9, Nota::class)
+    val didaticaProfessor = enumerationByName("didatica_professor", 9, Nota::class)
+    val metodoAvaliativo = enumerationByName("metodo_avaliativo", 9, Nota::class)
     val monitoria = enumerationByName("monitoria", 9, Nota::class)
-
-    val comentariosGerais = varchar("comentariosGerais", 999)
-
-    val presencaAtividades = enumerationByName("presencaAtividades", 9, Nota::class)
-    val horasSemanais = enumerationByName("horasSemanais", 9, HorasSemanaisEnum::class)
+    val comentariosGerais = varchar("comentarios_gerais", 999)
+    val presencaAtividades = enumerationByName("presenca_atividades", 9, Nota::class)
+    val horasSemanais = enumerationByName("horas_semanais", 9, HorasSemanaisEnum::class)
 }
 
 enum class Nota(val description: String) {
@@ -34,16 +32,38 @@ enum class HorasSemanaisEnum(val description: String) {
     QuatroHorasOuMais("Quatro horas ou mais")
 }
 
-
 class AvaliacaoEntity(id: EntityID<Int>) : IntEntity(id) {
-    companion object : IntEntityClass<AvaliacaoEntity>(Avaliacao)
+    companion object : IntEntityClass<AvaliacaoEntity>(Avaliacoes)
 
-    var disciplina_id by Avaliacao.disciplina_id
-    var materialDidatico by Avaliacao.materialDidatico
-    var didaticaProfessor by Avaliacao.didaticaProfessor
-    var metodoAvaliativo by Avaliacao.metodoAvaliativo
-    var monitoria by Avaliacao.monitoria
-    var comentariosGerais by Avaliacao.comentariosGerais
-    var presencaAtividades by Avaliacao.presencaAtividades
-    var horasSemanais by Avaliacao.horasSemanais
+    var disciplinaId by Avaliacoes.disciplinaId
+    var materialDidatico by Avaliacoes.materialDidatico
+    var didaticaProfessor by Avaliacoes.didaticaProfessor
+    var metodoAvaliativo by Avaliacoes.metodoAvaliativo
+    var monitoria by Avaliacoes.monitoria
+    var comentariosGerais by Avaliacoes.comentariosGerais
+    var presencaAtividades by Avaliacoes.presencaAtividades
+    var horasSemanais by Avaliacoes.horasSemanais
 }
+
+
+data class Avaliacao(
+    val disciplinaId: Int,
+    val materialDidatico: Nota,
+    val didaticaProfessor: Nota,
+    val metodoAvaliativo: Nota,
+    val monitoria: Nota,
+    val comentariosGerais: String,
+    val presencaAtividades: Nota,
+    val horasSemanais: HorasSemanaisEnum
+)
+
+fun AvaliacaoEntity.toAvaliacao() = Avaliacao(
+    disciplinaId,
+    materialDidatico,
+    didaticaProfessor,
+    metodoAvaliativo,
+    monitoria,
+    comentariosGerais,
+    presencaAtividades,
+    horasSemanais
+)
