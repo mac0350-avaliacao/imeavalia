@@ -13,5 +13,9 @@ const apiClient = axios.create({
 export default {
     getDisciplinas() {
         return apiClient.get('/disciplinas');
+    },
+
+    postAvaliacao(payload) {
+        return apiClient.post('/avaliacoes', payload);
     }
 };

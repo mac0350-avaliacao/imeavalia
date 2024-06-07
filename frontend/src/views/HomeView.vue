@@ -55,6 +55,9 @@
       <div>
         <v-text-field v-model="comentariosAvaliacao" label="Comentários consulta"></v-text-field>
       </div>
+      <div>
+        <v-btn @click="submitForm">Enviar</v-btn>
+      </div>
     </div>
   </main>
 </template>
@@ -86,6 +89,42 @@ export default {
       this.disciplines = response.data;
     } catch (error) {
       console.error('Error fetching disciplines:', error);
+    }
+  },
+  methods: {
+    async submitForm() {
+      const formData = {
+        disciplinaId: this.selectedDisciplines.value,
+        anoSemestre:
+        materialDidatico: this.reviewTypes // tem que expandir aqui...
+        didaticaProfessor:
+        monitoria:
+        metodoAvaliativo:
+        horasSemanais: this.disciplineHours,
+        presencaAtividades: this.disciplinePresence,
+        comentariosGerais: this.comentariosGerais,
+        comentariosAvaliacao: this.comentariosAvaliacao
+      };
+
+      const pl = {
+        "disciplinaId": 12,
+        "anoSemestre": 20212,
+        "materialDidatico": "Bom",
+        "didaticaProfessor": "MuitoBom",
+        "metodoAvaliativo": "Neutro",
+        "monitoria": "Ruim",
+        "comentariosGerais": "da aaaaaa aaaaaaaaaa aaaaaa asdasdasd",
+        "presencaAtividades": "Bom",
+        "horasSemanais": "DuasHoras"
+      }
+
+
+      try {
+        const response = await api.postAvaliacao(pl);
+        console.log('Form submitted successfully:', response.data);
+      } catch (error) {
+        console.error('Error submitting form:', error);
+      }
     }
   }
 }
