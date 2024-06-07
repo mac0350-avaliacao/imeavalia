@@ -7,7 +7,9 @@ import org.jetbrains.exposed.dao.id.IntIdTable
 
 
 object Avaliacoes : IntIdTable("avaliacoes") {
+    val oferecimentoId = integer("oferecimento_id")
     val disciplinaId = integer("disciplina_id")
+    val anoSemestre = varchar("ano_semestre", 5)
     val materialDidatico = enumerationByName("material_didatico", 9, Nota::class)
     val didaticaProfessor = enumerationByName("didatica_professor", 9, Nota::class)
     val metodoAvaliativo = enumerationByName("metodo_avaliativo", 9, Nota::class)
@@ -36,6 +38,8 @@ class AvaliacaoEntity(id: EntityID<Int>) : IntEntity(id) {
     companion object : IntEntityClass<AvaliacaoEntity>(Avaliacoes)
 
     var disciplinaId by Avaliacoes.disciplinaId
+    var anoSemestre by Avaliacoes.anoSemestre
+    var oferecimentoId by Avaliacoes.oferecimentoId
     var materialDidatico by Avaliacoes.materialDidatico
     var didaticaProfessor by Avaliacoes.didaticaProfessor
     var metodoAvaliativo by Avaliacoes.metodoAvaliativo
@@ -45,9 +49,10 @@ class AvaliacaoEntity(id: EntityID<Int>) : IntEntity(id) {
     var horasSemanais by Avaliacoes.horasSemanais
 }
 
-
 data class Avaliacao(
     val disciplinaId: Int,
+    val anoSemestre: String,
+    val oferecimentoId: Int,
     val materialDidatico: Nota,
     val didaticaProfessor: Nota,
     val metodoAvaliativo: Nota,
@@ -59,6 +64,8 @@ data class Avaliacao(
 
 fun AvaliacaoEntity.toAvaliacao() = Avaliacao(
     disciplinaId,
+    anoSemestre,
+    oferecimentoId,
     materialDidatico,
     didaticaProfessor,
     metodoAvaliativo,

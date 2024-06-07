@@ -7,25 +7,25 @@ import org.jetbrains.exposed.dao.id.EntityID
 
 
 object Disciplinas : IntIdTable("disciplinas") {
-    val name = varchar("name", 100)
+    val nome = varchar("nome", 100)
     val sigla = varchar("sigla", 10).uniqueIndex()
 }
 
 class DisciplinaEntity(id: EntityID<Int>) : IntEntity(id) {
     companion object : IntEntityClass<DisciplinaEntity>(Disciplinas)
 
-    var name by Disciplinas.name
+    var nome by Disciplinas.nome
     var sigla by Disciplinas.sigla
 }
 
 data class Disciplina(
     val id: Int,
-    val name: String,
+    val nome: String,
     val sigla: String
 )
 
 fun DisciplinaEntity.toDisciplina() = Disciplina(
     id.value,
-    name,
+    nome,
     sigla
 )
