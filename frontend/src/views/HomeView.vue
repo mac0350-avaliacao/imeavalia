@@ -7,9 +7,10 @@
         <v-select
           v-model="selectedDisciplines"
           :items="disciplines"
+          item-title="nome"
+          item-value="id"
           hint="Selecione todas as matérias que você irá avaliar"
           label="Selecione as disciplinas"
-          multiple
           persistent-hint
         ></v-select>
       </div>
@@ -60,20 +61,16 @@
 ##- Quanto a sua presença nas aulas e realização de atividades propostas, você diria que (respostas:
 Muito ruim, ruim, boa, Muito boa)
 <script>
+
+import api from '../api';
+
 export default {
   data: () => ({
     disciplineHours: '',
     disciplinePresence: '',
-    selectedDisciplines: [],
+    selectedDisciplines: null,
     reviewColors: ['red', '#DC143C', 'green', 'blue'],
-    disciplines: [
-      'MAC0101 	Integração na Universidade e na Profissão',
-      'MAC0105 	Fundamentos de Matemática para a Computação',
-      'MAC0110 	Introdução à Computação',
-      'MAC0329 	Álgebra Booleana e Aplicações no Projeto de Arquitetura de Computadores',
-      'MAT2453 	Cálculo Diferencial e Integral I',
-      'MAT0112 	Vetores e Geometria'
-    ],
+    disciplines: [],
     reviewTypes: [
       { name: 'Material Didático', value: '' },
       { name: 'Didática do professor', value: '' },
@@ -82,7 +79,15 @@ export default {
     ],
     comentariosGerais: '',
     comentariosAvaliacao: ''
-  })
+  }),
+  async created() {
+    try {
+      const response = await api.getDisciplinas();
+      this.disciplines = response.data;
+    } catch (error) {
+      console.error('Error fetching disciplines:', error);
+    }
+  }
 }
 </script>
 

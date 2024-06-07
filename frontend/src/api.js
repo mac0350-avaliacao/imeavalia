@@ -3,10 +3,10 @@ import axios from 'axios';
 
 const apiClient = axios.create({
     baseURL: 'http://localhost:8081',
-    withCredentials: false, // This is the default
+    withCredentials: false,
     headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json; charset=utf-8'
     }
 });
 
