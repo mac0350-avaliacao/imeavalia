@@ -61,7 +61,7 @@ fun Route.avaliacoesRoutes() {
                         horasSemanais = avaliacao.horasSemanais
                     }
                 }
-                call.respond(newAvaliacao.toAvaliacao())
+                call.respond(mapOf("action" to "ADD_TO_PRIOR_OFFERING",  "message" to newAvaliacao.toAvaliacao()))
             } else {
                 val newOferecimento = transaction {
                     OferecimentoEntity.new {
@@ -72,11 +72,10 @@ fun Route.avaliacoesRoutes() {
                 }
                 val newAvaliacao = transaction {
                     AvaliacaoEntity.new {
-                        oferecimentoId = newOferecimento.toOferecimento().id
                         disciplinaId = avaliacao.disciplinaId
                         professorId = avaliacao.professorId
                         anoSemestre = avaliacao.anoSemestre
-                        oferecimentoId = avaliacao.oferecimentoId
+                        oferecimentoId = newOferecimento.toOferecimento().id
                         materialDidatico = avaliacao.materialDidatico
                         didaticaProfessor = avaliacao.didaticaProfessor
                         metodoAvaliativo = avaliacao.metodoAvaliativo
@@ -87,7 +86,7 @@ fun Route.avaliacoesRoutes() {
                         horasSemanais = avaliacao.horasSemanais
                     }
                 }
-                call.respond(newAvaliacao.toAvaliacao())
+                call.respond(mapOf("action" to "ADD_TO_NEW_OFFERING", "message" to newAvaliacao.toAvaliacao()))
             }
         }
     }

@@ -15,6 +15,10 @@ export default {
         return apiClient.get('/disciplinas');
     },
 
+    getProfessores() {
+        return apiClient.get('/professores');
+    },
+
     postAvaliacao(payload) {
         return apiClient.post('/avaliacoes', payload);
     }

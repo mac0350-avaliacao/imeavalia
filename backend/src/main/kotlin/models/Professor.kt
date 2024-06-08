@@ -6,12 +6,22 @@ import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 
 
-object Professor : IntIdTable("professores") {
+object Professores : IntIdTable("professores") {
     val nome = varchar("nome", 50)
 }
 
 class ProfessorEntity(id: EntityID<Int>) : IntEntity(id) {
-    companion object : IntEntityClass<ProfessorEntity>(Professor)
+    companion object : IntEntityClass<ProfessorEntity>(Professores)
 
-    var nome by Professor.nome
+    var nome by Professores.nome
 }
+
+data class Professor(
+    val id: Int,
+    val nome: String
+)
+
+fun ProfessorEntity.toProfessor() = Professor(
+    id.value,
+    nome
+)
