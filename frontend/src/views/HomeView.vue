@@ -2,69 +2,79 @@
 
 <template>
   <main class="home">
-    <div class="disciplineSelect">
-      <v-select
-        v-model="selectedDisciplines"
-        :items="disciplines"
-        item-title="nome"
-        item-value="id"
-        hint="Selecione todas as matérias que você irá avaliar"
-        label="Selecione a disciplina"
-        persistent-hint
-      ></v-select>
-    </div>
-    <div class="professorSelect">
-      <v-select
-        v-model="selectedProfessors"
-        :items="professors"
-        item-title="nome"
-        item-value="id"
-        label="Selecione o(a) professor(a)"
-        persistent-hint
-      ></v-select>
-    </div>
-    <div class="disciplineReview">
-      <div v-for="type in reviewTypes" :key="type">
-        <p>Avaliação do {{ type.name }}</p>
-        <v-radio-group v-model="type.value">
-          <v-radio :color="reviewColors['veryBad']" label="Muito ruim" value="MuitoRuim"></v-radio>
-          <v-radio :color="reviewColors['bad']" label="Ruim" value="Ruim"></v-radio>
-          <v-radio label="Neutro" value="neutro"></v-radio>
-          <v-radio :color="reviewColors['good']" label="Bom" value="Bom"></v-radio>
-          <v-radio :color="reviewColors['veryGood']" label="Muito bom" value="MuitoBom"></v-radio>
+    <v-form>
+      <div class="disciplineSelect">
+        <v-select
+          v-model="selectedDisciplines"
+          :items="disciplines"
+          :rules="SelectRule"
+          item-title="nome"
+          item-value="id"
+          hint="Selecione todas as matérias que você irá avaliar"
+          label="Selecione a disciplina"
+          persistent-hint
+        >
+          ></v-select
+        >
+      </div>
+      <div class="professorSelect">
+        <v-select
+          v-model="selectedProfessors"
+          :rules="SelectRule"
+          :items="professors"
+          item-title="nome"
+          item-value="id"
+          label="Selecione o(a) professor(a)"
+          persistent-hint
+        ></v-select>
+      </div>
+      <div class="disciplineReview">
+        <div v-for="type in reviewTypes" :key="type">
+          <p>Avaliação do {{ type.name }}</p>
+          <v-radio-group v-model="type.value">
+            <v-radio
+              :color="reviewColors['veryBad']"
+              label="Muito ruim"
+              value="MuitoRuim"
+            ></v-radio>
+            <v-radio :color="reviewColors['bad']" label="Ruim" value="Ruim"></v-radio>
+            <v-radio label="Neutro" value="neutro"></v-radio>
+            <v-radio :color="reviewColors['good']" label="Bom" value="Bom"></v-radio>
+            <v-radio :color="reviewColors['veryGood']" label="Muito bom" value="MuitoBom"></v-radio>
+          </v-radio-group>
+        </div>
+      </div>
+      <div>
+        <p>Quantas horas por semana você dedica ao estudo dessa disciplina? <br /></p>
+        <v-radio-group v-model="disciplineHours">
+          <v-radio label="1h ou menos" value="UmaHoraOuMenos"></v-radio>
+          <v-radio label="2h" value="DuasHoras"></v-radio>
+          <v-radio label="3 horas" value="TresHoras"></v-radio>
+          <v-radio label="4 horas ou mais" value="QuatroHorasOuMais"></v-radio>
         </v-radio-group>
       </div>
-    </div>
-    <div>
-      <p>Quantas horas por semana você dedica ao estudo dessa disciplina? <br /></p>
-      <v-radio-group v-model="disciplineHours">
-        <v-radio label="1h ou menos" value="UmaHoraOuMenos"></v-radio>
-        <v-radio label="2h" value="DuasHoras"></v-radio>
-        <v-radio label="3 horas" value="TresHoras"></v-radio>
-        <v-radio label="4 horas ou mais" value="QuatroHorasOuMais"></v-radio>
-      </v-radio-group>
-    </div>
-    <div>
-      <p>
-        Quanto a sua presença nas aulas e realização de atividades propostas, você diria que
-        <br />
-      </p>
-      <v-radio-group v-model="disciplinePresence">
-        <v-radio :color="reviewColors['veryBad']" label="muito ruim" value="MuitoRuim"></v-radio>
-        <v-radio :color="reviewColors['bad']" label="ruim" value="Ruim"></v-radio>
-        <v-radio :color="reviewColors['good']" label="boa" value="Bom"></v-radio>
-        <v-radio :color="reviewColors['veryGood']" label="muito boa" value="MuitoBom"></v-radio>
-      </v-radio-group>
-    </div>
-    <div>
-      <p>Caso queira, escreva comentários gerais sobre a matéria</p>
-      <v-textarea v-model="comentariosGerais" label="Comentários gerais"></v-textarea>
-    </div>
-    <div>
-      <p>Caso queira, escreva comentários sobre a consulta</p>
-      <v-textarea v-model="comentariosAvaliacao" label="Comentários consulta"></v-textarea>
-    </div>
-    <v-btn @click="submitForm">Enviar</v-btn>
+      <div>
+        <p>
+          Quanto a sua presença nas aulas e realização de atividades propostas, você diria que
+          <br />
+        </p>
+        <v-radio-group v-model="disciplinePresence">
+          <v-radio :color="reviewColors['veryBad']" label="muito ruim" value="MuitoRuim"></v-radio>
+          <v-radio :color="reviewColors['bad']" label="ruim" value="Ruim"></v-radio>
+          <v-radio :color="reviewColors['good']" label="boa" value="Bom"></v-radio>
+          <v-radio :color="reviewColors['veryGood']" label="muito boa" value="MuitoBom"></v-radio>
+        </v-radio-group>
+      </div>
+      <div>
+        <p>Caso queira, escreva comentários gerais sobre a matéria</p>
+        <v-textarea v-model="comentariosGerais" label="Comentários gerais"></v-textarea>
+      </div>
+      <div>
+        <p>Caso queira, escreva comentários sobre a consulta</p>
+        <v-textarea v-model="comentariosAvaliacao" label="Comentários consulta"></v-textarea>
+      </div>
+      <v-btn @click="submitForm">Enviar</v-btn>
+    </v-form>
   </main>
 </template>
 
@@ -94,7 +104,13 @@ export default {
       { name: 'Monitoria', value: '' }
     ],
     comentariosGerais: '',
-    comentariosAvaliacao: ''
+    comentariosAvaliacao: '',
+    SelectRule: [
+      (value) => {
+        if (value) return true
+        return 'Campo não pode ser vazio'
+      }
+    ]
   }),
   async created() {
     try {
