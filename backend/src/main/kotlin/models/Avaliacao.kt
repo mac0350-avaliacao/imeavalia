@@ -1,5 +1,6 @@
 package models
 
+import models.Avaliacoes.varchar
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
@@ -9,14 +10,16 @@ import org.jetbrains.exposed.dao.id.IntIdTable
 object Avaliacoes : IntIdTable("avaliacoes") {
     val oferecimentoId = integer("oferecimento_id")
     val disciplinaId = integer("disciplina_id")
+    val professorId = integer("professor_id")
     val anoSemestre = varchar("ano_semestre", 5)
     val materialDidatico = enumerationByName("material_didatico", 9, Nota::class)
     val didaticaProfessor = enumerationByName("didatica_professor", 9, Nota::class)
     val metodoAvaliativo = enumerationByName("metodo_avaliativo", 9, Nota::class)
     val monitoria = enumerationByName("monitoria", 9, Nota::class)
     val comentariosGerais = varchar("comentarios_gerais", 999)
+    val comentariosAvaliacao = varchar("comentarios_avaliacao", 999)
     val presencaAtividades = enumerationByName("presenca_atividades", 9, Nota::class)
-    val horasSemanais = enumerationByName("horas_semanais", 9, HorasSemanaisEnum::class)
+    val horasSemanais = enumerationByName("horas_semanais", 17, HorasSemanaisEnum::class)
 }
 
 enum class Nota(val description: String) {
@@ -38,6 +41,7 @@ class AvaliacaoEntity(id: EntityID<Int>) : IntEntity(id) {
     companion object : IntEntityClass<AvaliacaoEntity>(Avaliacoes)
 
     var disciplinaId by Avaliacoes.disciplinaId
+    var professorId by Avaliacoes.professorId
     var anoSemestre by Avaliacoes.anoSemestre
     var oferecimentoId by Avaliacoes.oferecimentoId
     var materialDidatico by Avaliacoes.materialDidatico
@@ -45,12 +49,14 @@ class AvaliacaoEntity(id: EntityID<Int>) : IntEntity(id) {
     var metodoAvaliativo by Avaliacoes.metodoAvaliativo
     var monitoria by Avaliacoes.monitoria
     var comentariosGerais by Avaliacoes.comentariosGerais
+    var comentariosAvaliacao by Avaliacoes.comentariosAvaliacao
     var presencaAtividades by Avaliacoes.presencaAtividades
     var horasSemanais by Avaliacoes.horasSemanais
 }
 
 data class Avaliacao(
     val disciplinaId: Int,
+    val professorId: Int,
     val anoSemestre: String,
     val oferecimentoId: Int,
     val materialDidatico: Nota,
@@ -58,12 +64,14 @@ data class Avaliacao(
     val metodoAvaliativo: Nota,
     val monitoria: Nota,
     val comentariosGerais: String,
+    val comentariosAvaliacao: String,
     val presencaAtividades: Nota,
     val horasSemanais: HorasSemanaisEnum
 )
 
 fun AvaliacaoEntity.toAvaliacao() = Avaliacao(
     disciplinaId,
+    professorId,
     anoSemestre,
     oferecimentoId,
     materialDidatico,
@@ -71,6 +79,7 @@ fun AvaliacaoEntity.toAvaliacao() = Avaliacao(
     metodoAvaliativo,
     monitoria,
     comentariosGerais,
+    comentariosAvaliacao,
     presencaAtividades,
     horasSemanais
 )
