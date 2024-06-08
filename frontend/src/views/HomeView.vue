@@ -24,13 +24,6 @@
             persistent-hint
         ></v-select>
       </div>
-      <div>
-        <v-text-field
-          v-model="anoSemestre"
-          label="Ano e Semestre (ex: 2024-2)"
-        ><!--  to do: v-mask="'####-#'" -->
-        </v-text-field>
-      </div>
       <div class="disciplineReview">
         <div v-for="type in reviewTypes" :key="type">
           <p>Avaliação do {{ type.name }}: {{ type.value }}</p>
@@ -78,8 +71,6 @@
     </div>
   </main>
 </template>
-##- Quanto a sua presença nas aulas e realização de atividades propostas, você diria que (respostas:
-Muito ruim, ruim, boa, Muito boa)
 <script>
 
 import api from '../api';
@@ -118,7 +109,20 @@ export default {
       console.error('Error fetching professors:', error);
     }
   },
+  mounted() {
+    this.setYearSemester();
+  },
   methods: {
+    setYearSemester() {
+      const current_date = new Date();
+
+      const current_year = current_date.getFullYear();
+      const current_month = current_date.getMonth();
+
+      var semester = current_month <= 5 ? 1 : 2; 
+
+      this.anoSemestre = `${current_year}-${semester}`;
+    },
     async submitForm() {
       const formData = {
         disciplinaId: this.selectedDisciplines,
