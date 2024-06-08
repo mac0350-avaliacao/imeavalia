@@ -2,7 +2,7 @@
 
 <template>
   <main class="home">
-    <v-form>
+    <v-form >
       <div class="disciplineSelect">
         <v-select
           v-model="selectedDisciplines"
@@ -73,8 +73,8 @@
         <p>Caso queira, escreva comentários sobre a consulta</p>
         <v-textarea v-model="comentariosAvaliacao" label="Comentários consulta"></v-textarea>
       </div>
-      <v-btn @click="submitForm">Enviar</v-btn>
     </v-form>
+    <v-btn @click="submitForm">Enviar</v-btn>
   </main>
 </template>
 
