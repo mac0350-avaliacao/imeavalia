@@ -45,8 +45,6 @@ fun Application.module() {
 
     initDB()
 
-    val ANO_SEMESTRE: String = "20241"
-
     routing {
         disciplinasRoutes()
         professoresRoutes()
