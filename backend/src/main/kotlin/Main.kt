@@ -1,24 +1,37 @@
 package br.com.imeavalia
 
+import io.ktor.http.*
+import io.ktor.server.application.*
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.netty.Netty
+import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.plugins.cors.routing.CORS
+import io.ktor.serialization.gson.gson
+import io.ktor.server.response.*
+import io.ktor.server.request.*
+import io.ktor.server.routing.*
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.SchemaUtils
+import models.*
+import routes.avaliacoesRoutes
+import routes.disciplinasRoutes
 
-import models.Aluno
-import models.AlunoEntity
-import models.Disciplina
-import models.DisciplinaEntity
-import org.jetbrains.exposed.sql.addLogger
-import models.Avaliacao
-import models.AvaliacaoEntity
-import models.Nota
-import models.HorasSemanaisEnum
-
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 fun main() {
+    embeddedServer(Netty, port = 8081, module = Application::module).start(wait = true)
+}
 
-    // Connect to your database
+fun Application.module() {
+    install(ContentNegotiation) {
+        gson {
+            setPrettyPrinting()
+        }
+    }
+
+    install(CORS) {
+        anyHost()
+        allowHeader(HttpHeaders.ContentType)
+    }
+
     Database.connect(
         "jdbc:postgresql://localhost:5432/postgres",
         driver = "org.postgresql.Driver",
@@ -26,37 +39,8 @@ fun main() {
         password = "123456"
     )
 
-    transaction {
-        /*
-        SchemaUtils.createMissingTablesAndColumns(Aluno)
-
-        val newAluno = AlunoEntity.new {
-            name = "Aya Meira"
-            nusp = "9353081"
-            email = "aya.meira@usp.br"
-        }
-        SchemaUtils.createMissingTablesAndColumns(Disciplina)
-
-        val disciplina = DisciplinaEntity.new {
-            name = "Desenvolvimento de Software"
-            sigla = "MAC0250"
-        }
-        */
-        SchemaUtils.createMissingTablesAndColumns(Avaliacao)
-
-        val newAvaliacao = AvaliacaoEntity.new {
-            disciplina_id = 1
-            materialDidatico = Nota.Bom
-            didaticaProfessor = Nota.MuitoBom
-            metodoAvaliativo = Nota.Neutro
-            monitoria = Nota.Ruim
-            comentariosGerais = "Curso bem estruturado, mas com avaliações confusas."
-            presencaAtividades = Nota.Bom
-            horasSemanais = HorasSemanaisEnum.DuasHoras
-        }
-
+    routing {
+        disciplinasRoutes()
+        avaliacoesRoutes()
     }
-
-    println("Hello, world")
-
 }
