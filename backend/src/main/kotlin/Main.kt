@@ -7,21 +7,17 @@ import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.cors.routing.CORS
 import io.ktor.serialization.gson.gson
-import io.ktor.server.response.*
-import io.ktor.server.request.*
 import io.ktor.server.routing.*
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.transactions.transaction
 import models.*
-import routes.avaliacoesRoutes
-import routes.disciplinasRoutes
-import routes.professoresRoutes
+import routes.*
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SchemaUtils
-
-object Planetas: Table(){
-    val nome = varchar("nome", 30)
-}
+import java.io.File
+import java.io.FileNotFoundException
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 fun main() {
     embeddedServer(Netty, port = 8081, module = Application::module).start(wait = true)
@@ -46,22 +42,66 @@ fun Application.module() {
         password = "123456"
     )
 
-    /*
 
-    val avaliacoes = transaction {
-        AvaliacaoEntity.all().map { it.toAvaliacao() }
-    }
-    println(avaliacoes)
-    */
+    initDB()
+
+
     routing {
         disciplinasRoutes()
         professoresRoutes()
         avaliacoesRoutes()
+        oferecimentosRoutes()
     }
 }
 
-fun itDB() {
+data class OferecimentoFromFile(val disciplina_sigla: String, val professor_nome: String)
+
+fun initOferecimentos() {
+    val ANO_SEMESTRE: String = "20241"
+
+    val filePath = "oferecimentos_20241.json"
+    val gson = Gson()
+    val file = File(filePath)
+    val content = file.readText()
+    val listType = object : TypeToken<List<OferecimentoFromFile>>() {}.type
+    val offerings: List<OferecimentoFromFile> = gson.fromJson(content, listType)
+    offerings.forEach {
+        var discId: Int = 0;
+        var profId: Int = 0;
+        transaction {
+            val query = Disciplinas.select { Disciplinas.sigla eq it.disciplina_sigla }.singleOrNull()
+            val disciplina = query?.toDisciplina()
+            if (disciplina != null) {
+                discId = disciplina.id
+            }
+        }
+        transaction {
+            val query = Professores.select { Professores.nome eq it.professor_nome }.singleOrNull()
+            val professor = query?.toProfessor()
+            if (professor != null) {
+                profId = professor.id
+            }
+        }
+
+        transaction {
+            Oferecimentos.insert {
+                it[disciplinaId] = discId
+                it[professorId] = profId
+                it[anoSemestre] = ANO_SEMESTRE
+            }
+        }
+    }
+}
+fun initDB() {
     transaction {
+        SchemaUtils.drop(Oferecimentos)
+        SchemaUtils.create(Oferecimentos)
+        //SchemaUtils.drop(Avaliacoes)
+        SchemaUtils.create(Avaliacoes)
+    }
+
+    transaction {
+        SchemaUtils.drop(Disciplinas)
         SchemaUtils.create(Disciplinas)
 
         Disciplinas.insert {
@@ -75,6 +115,14 @@ fun itDB() {
         Disciplinas.insert {
             it[sigla] = "MAT0120"
             it[nome] = "Álgebra I para Licenciatura"
+        }
+        Disciplinas.insert {
+            it[sigla] = "MAT0359"
+            it[nome] = "Lógica"
+        }
+        Disciplinas.insert {
+            it[sigla] = "MAT0364"
+            it[nome] = "Teoria de Galois"
         }
         Disciplinas.insert {
             it[sigla] = "MAT0213"
@@ -271,6 +319,10 @@ fun itDB() {
         Disciplinas.insert {
             it[sigla] = "MAT0111"
             it[nome] = "Cálculo Diferencial e Integral I"
+        }
+        Disciplinas.insert {
+            it[sigla] = "MAT0112"
+            it[nome] = "Vetores e Geometria"
         }
         Disciplinas.insert {
             it[sigla] = "MAT3110"
@@ -477,6 +529,10 @@ fun itDB() {
             it[nome] = "Desenvolvimento para Web"
         }
         Disciplinas.insert {
+            it[sigla] = "MAC0472"
+            it[nome] = "Laboratório de Métodos Ágeis"
+        }
+        Disciplinas.insert {
             it[sigla] = "MAC0458"
             it[nome] = "Direito e Software"
         }
@@ -569,8 +625,12 @@ fun itDB() {
             it[nome] = "Funções Diferenciáveis e Séries"
         }
         Disciplinas.insert {
-            it[sigla] = "MAC0546"
+            it[sigla] = "MAC0536"
             it[nome] = "Fundamentos da Internet das Coisas"
+        }
+        Disciplinas.insert {
+            it[sigla] = "MAC0546"
+            it[nome] = "Tópicos de Matemática Discreta II"
         }
         Disciplinas.insert {
             it[sigla] = "MAP2220"
@@ -677,8 +737,60 @@ fun itDB() {
             it[nome] = "Integração na Universidade e na Profissão"
         }
         Disciplinas.insert {
+            it[sigla] = "MAC0210"
+            it[nome] = "Laboratório de Métodos Numéricos"
+        }
+        Disciplinas.insert {
+            it[sigla] = "MAC0209"
+            it[nome] = "Modelagem e Simulação"
+        }
+        Disciplinas.insert {
+            it[sigla] = "MAC0422"
+            it[nome] = "Sistemas Operacionais"
+        }
+        Disciplinas.insert {
             it[sigla] = "MAC0425"
             it[nome] = "Inteligência Artificial"
+        }
+        Disciplinas.insert {
+            it[sigla] = "MAC0426"
+            it[nome] = "Sistemas de Bancos de Dados"
+        }
+        Disciplinas.insert {
+            it[sigla] = "MAC0427"
+            it[nome] = "Otimização Não Linear"
+        }
+        Disciplinas.insert {
+            it[sigla] = "MAC0325"
+            it[nome] = "Otimização Combinatória"
+        }
+        Disciplinas.insert {
+            it[sigla] = "MAC0499"
+            it[nome] = "Trabalho de Formatura Supervisionado"
+        }
+        Disciplinas.insert {
+            it[sigla] = "MAC0500"
+            it[nome] = "Trabalho de Formatura Supervisionado Voltado à Extensão"
+        }
+        Disciplinas.insert {
+            it[sigla] = "MAC0228"
+            it[nome] = "Noções de Probabilidade e Processos Estocásticos"
+        }
+        Disciplinas.insert {
+            it[sigla] = "MAE0315"
+            it[nome] = "Tecnologia da Amostragem"
+        }
+        Disciplinas.insert {
+            it[sigla] = "MAP2310"
+            it[nome] = "Métodos Numéricos em Equações Diferenciais I"
+        }
+        Disciplinas.insert {
+            it[sigla] = "MAT0330"
+            it[nome] = "Teoria dos Conjuntos"
+        }
+        Disciplinas.insert {
+            it[sigla] = "MAE0325"
+            it[nome] = "Séries Temporais"
         }
         Disciplinas.insert {
             it[sigla] = "MAT0511"
@@ -737,6 +849,10 @@ fun itDB() {
             it[nome] = "Introdução à Computação para Ciências Exatas e Tecnologia"
         }
         Disciplinas.insert {
+            it[sigla] = "MAC0417"
+            it[nome] = "Visão e Processamento de Imagens"
+        }
+        Disciplinas.insert {
             it[sigla] = "MAC0113"
             it[nome] = "Introdução à Computação para Ciências Humanas"
         }
@@ -747,6 +863,10 @@ fun itDB() {
         Disciplinas.insert {
             it[sigla] = "MAE0225"
             it[nome] = "Introdução à Inferência Estatística"
+        }
+        Disciplinas.insert {
+            it[sigla] = "MAE0228"
+            it[nome] = " Noções de Probabilidade e Processos Estocásticos"
         }
         Disciplinas.insert {
             it[sigla] = "MAT0349"
@@ -852,13 +972,10 @@ fun itDB() {
             it[sigla] = "MAP0431"
             it[nome] = "Introdução Matemática à Mecânica dos Fluidos"
         }
-        val disciplinas = Disciplinas.selectAll().map {
-            it[Disciplinas.nome]
-        }
-        println(disciplinas)
     }
 
     transaction {
+        SchemaUtils.drop(Professores)
         SchemaUtils.create(Professores)
         Professores.insert {
             it[nome] = "Albert Meads Fisher"
@@ -966,9 +1083,6 @@ fun itDB() {
             it[nome] = "Henrique Guzzo Junior"
         }
         Professores.insert {
-            it[nome] = "Hugo Luiz Mariano"
-        }
-        Professores.insert {
             it[nome] = "Humberto Daniel Carrión Villarroel"
         }
         Professores.insert {
@@ -1029,9 +1143,6 @@ fun itDB() {
             it[nome] = "Lucia Renato Junqueira"
         }
         Professores.insert {
-            it[nome] = "Lucia Satie Ikemoto Murakami"
-        }
-        Professores.insert {
             it[nome] = "Lucilia Daruiz Borsari"
         }
         Professores.insert {
@@ -1053,13 +1164,7 @@ fun itDB() {
             it[nome] = "Mary Lilian Lourenço"
         }
         Professores.insert {
-            it[nome] = "Mikhailo Dokuchaev"
-        }
-        Professores.insert {
             it[nome] = "Nataliia Goloshchapova"
-        }
-        Professores.insert {
-            it[nome] = "Odilon Otavio Luciano"
         }
         Professores.insert {
             it[nome] = "Ofelia Teresa Alas"
@@ -1123,9 +1228,6 @@ fun itDB() {
         }
         Professores.insert {
             it[nome] = "Wilson Albeiro Cuellar Carrera"
-        }
-        Professores.insert {
-            it[nome] = "Zara Issa Abud"
         }
         Professores.insert {
             it[nome] = "Ana Catarina Pontone Hellmeister"
@@ -1194,9 +1296,6 @@ fun itDB() {
             it[nome] = "Claudio Gorodski"
         }
         Professores.insert {
-            it[nome] = "Cristian Andres Ortiz Gonzalez"
-        }
-        Professores.insert {
             it[nome] = "Edson de Faria"
         }
         Professores.insert {
@@ -1206,7 +1305,10 @@ fun itDB() {
             it[nome] = "Eduardo do Nascimento Marcos"
         }
         Professores.insert {
-            it[nome] = "Flavio Ulhoa Coelho"
+            it[nome] = "Marcel K. C. Silva"
+        }
+        Professores.insert {
+            it[nome] = "Routo Terada"
         }
         Professores.insert {
             it[nome] = "Jaime Angulo Pava"
@@ -1222,6 +1324,102 @@ fun itDB() {
         }
         Professores.insert {
             it[nome] = "Ricardo Bianconi"
+        }
+        Professores.insert {
+            it[nome] = "Ronaldo F. Hashimoto"
+        }
+        Professores.insert {
+            it[nome] = "Denis D. Mauá"
+        }
+        Professores.insert {
+            it[nome] = "Kelly R. Braghetto"
+        }
+        Professores.insert {
+            it[nome] = "Leonidas O. Brandao"
+        }
+        Professores.insert {
+            it[nome] = "Ernesto J. G. Birgin"
+        }
+        Professores.insert {
+            it[nome] = "Junior Barrera"
+        }
+        Professores.insert {
+            it[nome] = "Nina S. T. Hirata"
+        }
+        Professores.insert {
+            it[nome] = "Yoshiharu Kohayakawa"
+        }
+        Professores.insert {
+            it[nome] = "Adilson Simonis"
+        }
+        Professores.insert {
+            it[nome] = "Carlos H. Morimoto"
+        }
+        Professores.insert {
+            it[nome] = "Eduardo J. Neves"
+        }
+        Professores.insert {
+            it[nome] = "Morgan F. T. Andre"
+        }
+        Professores.insert {
+            it[nome] = "Airlane P. Alencar"
+        }
+        Professores.insert {
+            it[nome] = "Chang Chiann"
+        }
+        Professores.insert {
+            it[nome] = "Rafael B. Stern"
+        }
+        Professores.insert {
+            it[nome] = "Antonio E. Fabris"
+        }
+        Professores.insert {
+            it[nome] = "Pedro T. P. Lopes"
+        }
+        Professores.insert {
+            it[nome] = "Alexandre M. Roma"
+        }
+        Professores.insert {
+            it[nome] = "Sonia R. L. Garcia"
+        }
+        Professores.insert {
+            it[nome] = "Manuel V. P. Garcia"
+        }
+        Professores.insert {
+            it[nome] = "Yoshiko Wakabayashi"
+        }
+        Professores.insert {
+            it[nome] = "Paulo R. M. Meirelles"
+        }
+        Professores.insert {
+            it[nome] = "Leliane N. Barros"
+        }
+        Professores.insert {
+            it[nome] = "Flavio S. C. Silva"
+        }
+        Professores.insert {
+            it[nome] = "Alfredo G. V. Lejbman"
+        }
+        Professores.insert {
+            it[nome] = "Sinai Robins"
+        }
+        Professores.insert {
+            it[nome] = "Guilherme O. Mota"
+        }
+        Professores.insert {
+            it[nome] = "Daniel M. Batista"
+        }
+        Professores.insert {
+            it[nome] = "Marcelo G. Queiroz"
+        }
+        Professores.insert {
+            it[nome] = "Roberto M. C. Junior"
+        }
+        Professores.insert {
+            it[nome] = "Roberto H. Junior"
+        }
+        Professores.insert {
+            it[nome] = "Lucas C. C. Souza"
         }
         Professores.insert {
             it[nome] = "Valentin Raphael Henri Ferenczi"
@@ -1246,9 +1444,6 @@ fun itDB() {
         }
         Professores.insert {
             it[nome] = "David Pires Dias"
-        }
-        Professores.insert {
-            it[nome] = "Eloi Medina Galego"
         }
         Professores.insert {
             it[nome] = "Gaetano Siciliano"
@@ -1359,9 +1554,6 @@ fun itDB() {
             it[nome] = "Júlio César Augusto do Valle"
         }
         Professores.insert {
-            it[nome] = "Leila Maria Vasconcellos Figueiredo"
-        }
-        Professores.insert {
             it[nome] = "Leonardo Pellegrini Rodrigues"
         }
         Professores.insert {
@@ -1396,4 +1588,5 @@ fun itDB() {
         }
     }
 
+    initOferecimentos()
 }
