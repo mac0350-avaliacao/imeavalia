@@ -1,21 +1,11 @@
 package models
 
 import org.jetbrains.exposed.dao.id.IntIdTable
-import org.jetbrains.exposed.dao.IntEntity
-import org.jetbrains.exposed.dao.IntEntityClass
-import org.jetbrains.exposed.dao.id.EntityID
-
+import org.jetbrains.exposed.sql.ResultRow
 
 object Disciplinas : IntIdTable("disciplinas") {
     val nome = varchar("nome", 100)
     val sigla = varchar("sigla", 10).uniqueIndex()
-}
-
-class DisciplinaEntity(id: EntityID<Int>) : IntEntity(id) {
-    companion object : IntEntityClass<DisciplinaEntity>(Disciplinas)
-
-    var nome by Disciplinas.nome
-    var sigla by Disciplinas.sigla
 }
 
 data class Disciplina(
@@ -24,8 +14,8 @@ data class Disciplina(
     val sigla: String
 )
 
-fun DisciplinaEntity.toDisciplina() = Disciplina(
-    id.value,
-    nome,
-    sigla
+fun ResultRow.toDisciplina() = Disciplina(
+    id = this[Disciplinas.id].value,
+    nome = this[Disciplinas.nome],
+    sigla = this[Disciplinas.sigla]
 )
