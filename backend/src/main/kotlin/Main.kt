@@ -45,6 +45,7 @@ fun Application.module() {
 
     initDB()
 
+    val ANO_SEMESTRE: String = "20241"
 
     routing {
         disciplinasRoutes()
@@ -54,7 +55,6 @@ fun Application.module() {
     }
 }
 
-data class OferecimentoFromFile(val disciplina_sigla: String, val professor_nome: String)
 
 fun initOferecimentos() {
     val ANO_SEMESTRE: String = "20241"
@@ -63,8 +63,8 @@ fun initOferecimentos() {
     val gson = Gson()
     val file = File(filePath)
     val content = file.readText()
-    val listType = object : TypeToken<List<OferecimentoFromFile>>() {}.type
-    val offerings: List<OferecimentoFromFile> = gson.fromJson(content, listType)
+    val listType = object : TypeToken<List<OferecimentoDetalhes>>() {}.type
+    val offerings: List<OferecimentoDetalhes> = gson.fromJson(content, listType)
     offerings.forEach {
         var discId: Int = 0;
         var profId: Int = 0;
@@ -91,17 +91,20 @@ fun initOferecimentos() {
             }
         }
     }
+    println("Initialized oferecimentos")
 }
 fun initDB() {
     transaction {
         SchemaUtils.drop(Oferecimentos)
+        SchemaUtils.drop(Disciplinas)
+        SchemaUtils.drop(Professores)
+        SchemaUtils.drop(Avaliacoes)
+
         SchemaUtils.create(Oferecimentos)
-        //SchemaUtils.drop(Avaliacoes)
         SchemaUtils.create(Avaliacoes)
     }
 
     transaction {
-        SchemaUtils.drop(Disciplinas)
         SchemaUtils.create(Disciplinas)
 
         Disciplinas.insert {
@@ -975,7 +978,6 @@ fun initDB() {
     }
 
     transaction {
-        SchemaUtils.drop(Professores)
         SchemaUtils.create(Professores)
         Professores.insert {
             it[nome] = "Albert Meads Fisher"

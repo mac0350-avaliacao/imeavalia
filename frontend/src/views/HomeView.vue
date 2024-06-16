@@ -13,9 +13,7 @@
           hint="Selecione todas as matérias que você irá avaliar"
           label="Selecione a disciplina"
           persistent-hint
-        >
-          ></v-select
-        >
+        ></v-select>
       </div>
       <div class="professorSelect">
         <v-select
@@ -85,7 +83,8 @@ export default {
   data: () => ({
     horasSemanais: '',
     presencaAtividades: '',
-    anoSemestre: '',
+    anoSemestre: '20241',
+    oferecimentoSelecionado: null,
     disciplinaSelecionada: null,
     professorSelecionado: null,
     reviewColors: {
@@ -94,6 +93,7 @@ export default {
       good: 'green',
       veryGood: 'blue'
     },
+    oferecimentos: [],
     professores: [],
     disciplinas: [],
     reviewTypes: [
@@ -113,17 +113,27 @@ export default {
   }),
   async created() {
     try {
-      const response = await api.getDisciplinas()
-      this.disciplinas = response.data
+      const response = await api.getOferecimentos()
+      this.disciplinas = response.data.map((of) => ({
+        nome: of.disciplina_nome,
+        id: of.disciplina_id
+      }))
+      const uniqueDisciplinasMap = new Map()
+      this.disciplinas.forEach(disciplina => {
+        uniqueDisciplinasMap.set(disciplina.id, disciplina)
+      })
+      this.disciplinas = Array.from(uniqueDisciplinasMap.values())
+
+
+      this.professores = response.data.map((of) => ({
+        nome: of.professor_nome,
+        id: of.professor_id
+      }))
+
+      this.oferecimentos = response.data
+
     } catch (error) {
       console.error('Error fetching disciplinas:', error)
-    }
-
-    try {
-      const response = await api.getProfessores()
-      this.professores = response.data
-    } catch (error) {
-      console.error('Error fetching professores:', error)
     }
   },
   mounted() {
@@ -164,6 +174,18 @@ export default {
 
         console.error('Error submitting form:', error)
         console.log(formData)
+      }
+    }
+  },
+  watch: {
+    disciplinaSelecionada(newVal, oldVal) {
+      if (newVal) {
+        this.professorSelecionado = null
+
+        this.professores = this.oferecimentos.filter(of => of.disciplina_id === newVal).map((of) => ({
+          nome: of.professor_nome,
+          id: of.professor_id
+        }))
       }
     }
   }
