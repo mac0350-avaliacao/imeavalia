@@ -38,7 +38,7 @@
               value="MuitoRuim"
             ></v-radio>
             <v-radio :color="reviewColors['bad']" label="Ruim" value="Ruim"></v-radio>
-            <v-radio label="Neutro" value="neutro"></v-radio>
+            <v-radio label="Neutro" value="Neutro"></v-radio>
             <v-radio :color="reviewColors['good']" label="Bom" value="Bom"></v-radio>
             <v-radio :color="reviewColors['veryGood']" label="Muito bom" value="MuitoBom"></v-radio>
           </v-radio-group>
@@ -164,7 +164,9 @@ export default {
         const response = await api.postAvaliacao(formData)
         console.log('Form submitted successfully:', response.data)
       } catch (error) {
+
         console.error('Error submitting form:', error)
+        console.log(formData)
       }
     }
   }

@@ -34,8 +34,12 @@ dependencies {
     // PostgresSQL JDBC Driver
     implementation("org.postgresql:postgresql:42.3.3")
 
+
+    testImplementation("org.jetbrains.exposed:exposed-core:0.38.2")
+    testImplementation("org.jetbrains.exposed:exposed-dao:0.38.2")
+    testImplementation("org.jetbrains.exposed:exposed-jdbc:0.38.2")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.7.0")
 }
 
 tasks.test {
