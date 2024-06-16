@@ -1,10 +1,8 @@
 package models
 
-import models.Avaliacoes.varchar
-import org.jetbrains.exposed.dao.IntEntity
-import org.jetbrains.exposed.dao.IntEntityClass
-import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
+import org.jetbrains.exposed.sql.ResultRow
+
 
 
 object Avaliacoes : IntIdTable("avaliacoes") {
@@ -37,24 +35,8 @@ enum class HorasSemanaisEnum(val description: String) {
     QuatroHorasOuMais("Quatro horas ou mais")
 }
 
-class AvaliacaoEntity(id: EntityID<Int>) : IntEntity(id) {
-    companion object : IntEntityClass<AvaliacaoEntity>(Avaliacoes)
-
-    var disciplinaId by Avaliacoes.disciplinaId
-    var professorId by Avaliacoes.professorId
-    var anoSemestre by Avaliacoes.anoSemestre
-    var oferecimentoId by Avaliacoes.oferecimentoId
-    var materialDidatico by Avaliacoes.materialDidatico
-    var didaticaProfessor by Avaliacoes.didaticaProfessor
-    var metodoAvaliativo by Avaliacoes.metodoAvaliativo
-    var monitoria by Avaliacoes.monitoria
-    var comentariosGerais by Avaliacoes.comentariosGerais
-    var comentariosAvaliacao by Avaliacoes.comentariosAvaliacao
-    var presencaAtividades by Avaliacoes.presencaAtividades
-    var horasSemanais by Avaliacoes.horasSemanais
-}
-
 data class Avaliacao(
+    val id: Int,
     val disciplinaId: Int,
     val professorId: Int,
     val anoSemestre: String,
@@ -69,17 +51,18 @@ data class Avaliacao(
     val horasSemanais: HorasSemanaisEnum
 )
 
-fun AvaliacaoEntity.toAvaliacao() = Avaliacao(
-    disciplinaId,
-    professorId,
-    anoSemestre,
-    oferecimentoId,
-    materialDidatico,
-    didaticaProfessor,
-    metodoAvaliativo,
-    monitoria,
-    comentariosGerais,
-    comentariosAvaliacao,
-    presencaAtividades,
-    horasSemanais
+fun ResultRow.toAvaliacao() = Avaliacao(
+    id = this[Avaliacoes.id].value,
+    disciplinaId = this[Avaliacoes.disciplinaId],
+    professorId = this[Avaliacoes.professorId],
+    anoSemestre = this[Avaliacoes.anoSemestre],
+    oferecimentoId = this[Avaliacoes.oferecimentoId],
+    materialDidatico = this[Avaliacoes.materialDidatico],
+    didaticaProfessor = this[Avaliacoes.didaticaProfessor],
+    metodoAvaliativo = this[Avaliacoes.metodoAvaliativo],
+    monitoria = this[Avaliacoes.monitoria],
+    comentariosGerais = this[Avaliacoes.comentariosGerais],
+    comentariosAvaliacao = this[Avaliacoes.comentariosAvaliacao],
+    presencaAtividades = this[Avaliacoes.presencaAtividades],
+    horasSemanais = this[Avaliacoes.horasSemanais]
 )
