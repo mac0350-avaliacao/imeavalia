@@ -16,6 +16,7 @@ project.setProperty("mainClassName", "br.com.imeavalia.Main")
 
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+    implementation("com.google.code.gson:gson:2.10.1")
 
     // Ktor
     implementation("io.ktor:ktor-server-core:2.3.11")

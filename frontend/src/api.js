@@ -21,5 +21,9 @@ export default {
 
     postAvaliacao(payload) {
         return apiClient.post('/avaliacoes', payload);
+    },
+
+    getOferecimentos(payload) {
+        return apiClient.get('/oferecimentos', payload);
     }
 };
