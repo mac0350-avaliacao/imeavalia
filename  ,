@@ -1,0 +1,117 @@
+[33mcommit 96c0d4a1dd8b410944ad15b7e6cfc6034381e7c2[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mintegrate-frontend[m[33m, [m[1;32mcreate-routes[m[33m)[m
+Author: ayameira-loop <aya.meira@looplex.com.br>
+Date:   Fri Jun 7 00:22:39 2024 -0500
+
+    feat(front) Using get method to fetch disciplinas. Dropdown in form.
+
+[33mcommit bf45b249ff1c0e96813b15925a4d6d5e7afd9f61[m
+Author: ayameira-loop <aya.meira@looplex.com.br>
+Date:   Thu Jun 6 23:30:08 2024 -0500
+
+    fix(route) Checking whether oferecimento exists before creating a new avaliacao entry
+
+[33mcommit 12521a28d1ca0def992fff71629d747e56b64917[m
+Author: ayameira-loop <aya.meira@looplex.com.br>
+Date:   Thu Jun 6 23:29:22 2024 -0500
+
+    feat(model) Including oferecimento
+
+[33mcommit e8e18cd55a8deb1fa151dc80b1566900cb525a2b[m
+Author: ayameira-loop <aya.meira@looplex.com.br>
+Date:   Thu Jun 6 23:28:46 2024 -0500
+
+    fix(models) Corrections to the models
+
+[33mcommit 048c56d4b8efdac7a032a284bbc97e1e82a37395[m[33m ([m[1;31morigin/create-routes[m[33m)[m
+Merge: b1ba077 80c0432
+Author: ayameira-loop <aya.meira@looplex.com.br>
+Date:   Wed Jun 5 20:54:49 2024 -0500
+
+    Merging with frontend updates
+
+[33mcommit b1ba0774750dc844327e8be9925e7716d3a2a850[m[33m ([m[1;32mmain[m[33m)[m
+Author: ayameira-loop <aya.meira@looplex.com.br>
+Date:   Wed Jun 5 20:29:56 2024 -0500
+
+    feat(routes) Adding routes to interact with the db avaliacoes and disciplinas
+
+[33mcommit 80c0432b14a06809c9ce73ef491890d7306aa7aa[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Merge: 745b7de 00ea1b3
+Author: ayameira-loop <72822950+ayameira-loop@users.noreply.github.com>
+Date:   Mon Jun 3 14:13:10 2024 -0500
+
+    Merge pull request #11 from mac0350-avaliacao/create-frontend
+    
+    Implement mainpage base format
+
+[33mcommit 00ea1b3d7a401709ee29f3fd8ad6c89961b91608[m
+Author: Luiz Carlos <luizcarlosdk@hotmail.com>
+Date:   Mon Jun 3 12:51:39 2024 -0300
+
+    Remove comments and unused lines
+    
+    Signed-off-by: Luiz Carlos <luizcarlosdk@hotmail.com>
+
+[33mcommit 93a690fe54dfc8b50880e2d899d1845027ccc02e[m
+Author: Luiz Carlos <luizcarlosdk@hotmail.com>
+Date:   Sun May 12 13:20:55 2024 -0300
+
+    Implement mainpage base format
+    
+    Signed-off-by: Luiz Carlos <luizcarlosdk@hotmail.com>
+
+[33mcommit 745b7deeeab2a8b56cc09db08dd39fa2afdf6fd7[m
+Author: ayaes <aya.meira@looplex.com.br>
+Date:   Sat May 11 16:36:47 2024 -0500
+
+    feat: create dbs for aluno, disciplina and avaliacao using postgres and sql (+ docker)
+
+[33mcommit 35bf3d66a402f104cd9ffc5931a058fac1cd5da1[m
+Author: ayameira <72822950+ayameira-loop@users.noreply.github.com>
+Date:   Tue Apr 9 11:27:44 2024 -0300
+
+    docs(README) Atualizar a arquitetura do projeto e as tecnologia utilizadas
+
+[33mcommit 39c5bd7d97a65f5278069e0d82d50bc1247001ea[m
+Author: Luiz Carlos <luizcarlosdk@hotmail.com>
+Date:   Sat Mar 30 14:45:06 2024 -0300
+
+    add backend base files
+    
+    Signed-off-by: Luiz Carlos <luizcarlosdk@hotmail.com>
+
+[33mcommit 083b734a5c8a8e192804cce91d0466da8283573b[m
+Author: ayameira <72822950+ayameira-loop@users.noreply.github.com>
+Date:   Sat Mar 30 14:04:05 2024 -0300
+
+    docs(uml) Add uml diagram
+
+[33mcommit 2135a99991188cb41fce0f2f7b2d4e59922a41a6[m
+Author: Luiz Carlos <luizcarlosdk@hotmail.com>
+Date:   Sat Mar 30 13:58:49 2024 -0300
+
+    add package-lock
+    
+    Signed-off-by: Luiz Carlos <luizcarlosdk@hotmail.com>
+
+[33mcommit 48dadec2acf94304cf23fe7e7645d635113f7b67[m
+Author: Luiz Carlos <luizcarlosdk@hotmail.com>
+Date:   Sat Mar 30 13:55:39 2024 -0300
+
+    add frontend base files
+    
+    Signed-off-by: Luiz Carlos <luizcarlosdk@hotmail.com>
+
+[33mcommit 5a87a6f47582fbc66dcbeb44e3a38a3e82f408b1[m
+Author: Luiz Carlos <61715930+luizcarlosdk@users.noreply.github.com>
+Date:   Tue Mar 12 11:32:42 2024 -0300
+
+    Update README.md
+    
+    write an inicial introduction to the project on readme
+
+[33mcommit e9cf4c2d980ee56e36ea69f227c74f1db3456c8c[m
+Author: Luiz Carlos <61715930+luizcarlosdk@users.noreply.github.com>
+Date:   Tue Mar 12 11:22:24 2024 -0300
+
+    Initial commit

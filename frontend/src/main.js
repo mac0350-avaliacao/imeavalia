@@ -13,6 +13,8 @@ import '@mdi/font/css/materialdesignicons.css'
 
 import { aliases, mdi } from 'vuetify/lib/iconsets/mdi'
 
+import { VueMaskDirective } from 'v-mask'
+
 const vuetify = createVuetify({
   icons: {
     defaultSet: 'mdi',

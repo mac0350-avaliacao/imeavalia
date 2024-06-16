@@ -1,39 +1,56 @@
 <script setup></script>
 
 <template>
-  <main>
-    <div>
+  <main class="home">
+    <v-form >
       <div class="disciplineSelect">
         <v-select
-          v-model="selectedDisciplines"
-          :items="disciplines"
+          v-model="disciplinaSelecionada"
+          :items="disciplinas"
+          :rules="SelectRule"
+          item-title="nome"
+          item-value="id"
           hint="Selecione todas as matérias que você irá avaliar"
-          label="Selecione as disciplinas"
-          multiple
+          label="Selecione a disciplina"
+          persistent-hint
+        >
+          ></v-select
+        >
+      </div>
+      <div class="professorSelect">
+        <v-select
+          v-model="professorSelecionado"
+          :rules="SelectRule"
+          :items="professores"
+          item-title="nome"
+          item-value="id"
+          label="Selecione o(a) professor(a)"
           persistent-hint
         ></v-select>
       </div>
       <div class="disciplineReview">
         <div v-for="type in reviewTypes" :key="type">
-          <p>Avaliação do {{ type.name }}: {{ type.value }}</p>
+          <p>Avaliação do {{ type.name }}</p>
           <v-radio-group v-model="type.value">
-            <v-radio :color="reviewColors[0]" label="Muito ruim" value="muito ruim"></v-radio>
-            <v-radio :color="reviewColors[1]" label="Ruim" value="ruim"></v-radio>
-            <v-radio label="Neutro" value="neutro"></v-radio>
-            <v-radio :color="reviewColors[2]" label="Bom" value="bom"></v-radio>
-            <v-radio :color="reviewColors[3]" label="Muito bom" value="muito bom"></v-radio>
+            <v-radio
+              :color="reviewColors['veryBad']"
+              label="Muito ruim"
+              value="MuitoRuim"
+            ></v-radio>
+            <v-radio :color="reviewColors['bad']" label="Ruim" value="Ruim"></v-radio>
+            <v-radio label="Neutro" value="Neutro"></v-radio>
+            <v-radio :color="reviewColors['good']" label="Bom" value="Bom"></v-radio>
+            <v-radio :color="reviewColors['veryGood']" label="Muito bom" value="MuitoBom"></v-radio>
           </v-radio-group>
         </div>
       </div>
       <div>
-        <p>
-          Quantas horas por semana você dedica ao estudo dessa disciplina? <br />
-        </p>
-        <v-radio-group v-model="disciplineHours">
-          <v-radio label="1h ou menos" value="1 horas ou menos"></v-radio>
-          <v-radio label="2h" value="2 horas"></v-radio>
-          <v-radio label="3 horas" value="3 horas"></v-radio>
-          <v-radio label="4 horas ou mais" value="4 horas ou mais"></v-radio>
+        <p>Quantas horas por semana você dedica ao estudo dessa disciplina? <br /></p>
+        <v-radio-group v-model="horasSemanais">
+          <v-radio label="1h ou menos" value="UmaHoraOuMenos"></v-radio>
+          <v-radio label="2h" value="DuasHoras"></v-radio>
+          <v-radio label="3 horas" value="TresHoras"></v-radio>
+          <v-radio label="4 horas ou mais" value="QuatroHorasOuMais"></v-radio>
         </v-radio-group>
       </div>
       <div>
@@ -41,39 +58,44 @@
           Quanto a sua presença nas aulas e realização de atividades propostas, você diria que
           <br />
         </p>
-        <v-radio-group v-model="disciplinePresence">
-          <v-radio label="muito ruim" value="muito ruim"></v-radio>
-          <v-radio label="ruim" value="ruim"></v-radio>
-          <v-radio label="boa" value="boa"></v-radio>
-          <v-radio label="muito boa" value="muito boa"></v-radio>
+        <v-radio-group v-model="presencaAtividades">
+          <v-radio :color="reviewColors['veryBad']" label="muito ruim" value="MuitoRuim"></v-radio>
+          <v-radio :color="reviewColors['bad']" label="ruim" value="Ruim"></v-radio>
+          <v-radio :color="reviewColors['good']" label="boa" value="Bom"></v-radio>
+          <v-radio :color="reviewColors['veryGood']" label="muito boa" value="MuitoBom"></v-radio>
         </v-radio-group>
       </div>
       <div>
-        <v-text-field v-model="comentariosGerais" label="Comentários gerais"></v-text-field>
+        <p>Caso queira, escreva comentários gerais sobre a matéria</p>
+        <v-textarea v-model="comentariosGerais" label="Comentários gerais"></v-textarea>
       </div>
       <div>
-        <v-text-field v-model="comentariosAvaliacao" label="Comentários consulta"></v-text-field>
+        <p>Caso queira, escreva comentários sobre a consulta</p>
+        <v-textarea v-model="comentariosAvaliacao" label="Comentários consulta"></v-textarea>
       </div>
-    </div>
+    </v-form>
+    <v-btn @click="submitForm">Enviar</v-btn>
   </main>
 </template>
-##- Quanto a sua presença nas aulas e realização de atividades propostas, você diria que (respostas:
-Muito ruim, ruim, boa, Muito boa)
+
 <script>
+import api from '../api'
+
 export default {
   data: () => ({
-    disciplineHours: '',
-    disciplinePresence: '',
-    selectedDisciplines: [],
-    reviewColors: ['red', '#DC143C', 'green', 'blue'],
-    disciplines: [
-      'MAC0101 	Integração na Universidade e na Profissão',
-      'MAC0105 	Fundamentos de Matemática para a Computação',
-      'MAC0110 	Introdução à Computação',
-      'MAC0329 	Álgebra Booleana e Aplicações no Projeto de Arquitetura de Computadores',
-      'MAT2453 	Cálculo Diferencial e Integral I',
-      'MAT0112 	Vetores e Geometria'
-    ],
+    horasSemanais: '',
+    presencaAtividades: '',
+    anoSemestre: '',
+    disciplinaSelecionada: null,
+    professorSelecionado: null,
+    reviewColors: {
+      veryBad: 'red',
+      bad: '#DC143C',
+      good: 'green',
+      veryGood: 'blue'
+    },
+    professores: [],
+    disciplinas: [],
     reviewTypes: [
       { name: 'Material Didático', value: '' },
       { name: 'Didática do professor', value: '' },
@@ -81,9 +103,89 @@ export default {
       { name: 'Monitoria', value: '' }
     ],
     comentariosGerais: '',
-    comentariosAvaliacao: ''
-  })
+    comentariosAvaliacao: '',
+    SelectRule: [
+      (value) => {
+        if (value) return true
+        return 'Campo não pode ser vazio'
+      }
+    ]
+  }),
+  async created() {
+    try {
+      const response = await api.getDisciplinas()
+      this.disciplinas = response.data
+    } catch (error) {
+      console.error('Error fetching disciplinas:', error)
+    }
+
+    try {
+      const response = await api.getProfessores()
+      this.professores = response.data
+    } catch (error) {
+      console.error('Error fetching professores:', error)
+    }
+  },
+  mounted() {
+    this.setYearSemester()
+  },
+  methods: {
+    setYearSemester() {
+      const current_date = new Date()
+
+      const current_year = current_date.getFullYear()
+      const current_month = current_date.getMonth()
+
+      var semester = current_month <= 5 ? 1 : 2
+
+      this.anoSemestre = `${current_year}${semester}`
+    },
+
+    async submitForm() {
+      const formData = {
+        disciplinaId: this.disciplinaSelecionada,
+        professorId: this.professorSelecionado,
+        anoSemestre: this.anoSemestre,
+        materialDidatico: this.reviewTypes.find((type) => type.name === 'Material Didático').value,
+        didaticaProfessor: this.reviewTypes.find((type) => type.name === 'Didática do professor')
+          .value,
+        metodoAvaliativo: this.reviewTypes.find((type) => type.name === 'Método avaliativo').value,
+        monitoria: this.reviewTypes.find((type) => type.name === 'Monitoria').value,
+        horasSemanais: this.horasSemanais,
+        presencaAtividades: this.presencaAtividades,
+        comentariosGerais: this.comentariosGerais,
+        comentariosAvaliacao: this.comentariosAvaliacao
+      }
+
+      try {
+        const response = await api.postAvaliacao(formData)
+        console.log('Form submitted successfully:', response.data)
+      } catch (error) {
+
+        console.error('Error submitting form:', error)
+        console.log(formData)
+      }
+    }
+  }
 }
 </script>
 
-<style></style>
+<style>
+.disciplineReview {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.disciplineReview > * {
+  padding: 1em;
+}
+
+.home {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  background-color: #e3f3f3;
+  border-radius: 1em;
+  padding: 2em;
+}
+</style>
