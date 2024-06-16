@@ -160,10 +160,14 @@ export default {
       try {
         const response = await api.postAvaliacao(formData)
         console.log('Form submitted successfully:', response.data)
+        alert("O formulário com enviado com sucesso.")
+        location.reload()
       } catch (error) {
-
+        const error_message = error.message
         console.error('Error submitting form:', error)
         console.log(formData)
+        alert(`Ocorreu um erro durante o envio. Mensagem do erro: ${error_message}`)
+
       }
     }
   }
