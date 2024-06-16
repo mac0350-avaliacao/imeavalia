@@ -5,8 +5,8 @@
     <v-form >
       <div class="disciplineSelect">
         <v-select
-          v-model="selectedDisciplines"
-          :items="disciplines"
+          v-model="disciplinaSelecionada"
+          :items="disciplinas"
           :rules="SelectRule"
           item-title="nome"
           item-value="id"
@@ -19,9 +19,9 @@
       </div>
       <div class="professorSelect">
         <v-select
-          v-model="selectedProfessors"
+          v-model="professorSelecionado"
           :rules="SelectRule"
-          :items="professors"
+          :items="professores"
           item-title="nome"
           item-value="id"
           label="Selecione o(a) professor(a)"
@@ -46,7 +46,7 @@
       </div>
       <div>
         <p>Quantas horas por semana você dedica ao estudo dessa disciplina? <br /></p>
-        <v-radio-group v-model="disciplineHours">
+        <v-radio-group v-model="horasSemanais">
           <v-radio label="1h ou menos" value="UmaHoraOuMenos"></v-radio>
           <v-radio label="2h" value="DuasHoras"></v-radio>
           <v-radio label="3 horas" value="TresHoras"></v-radio>
@@ -58,7 +58,7 @@
           Quanto a sua presença nas aulas e realização de atividades propostas, você diria que
           <br />
         </p>
-        <v-radio-group v-model="disciplinePresence">
+        <v-radio-group v-model="presencaAtividades">
           <v-radio :color="reviewColors['veryBad']" label="muito ruim" value="MuitoRuim"></v-radio>
           <v-radio :color="reviewColors['bad']" label="ruim" value="Ruim"></v-radio>
           <v-radio :color="reviewColors['good']" label="boa" value="Bom"></v-radio>
@@ -83,20 +83,19 @@ import api from '../api'
 
 export default {
   data: () => ({
-    disciplineHours: '',
-    disciplinePresence: '',
+    horasSemanais: '',
+    presencaAtividades: '',
     anoSemestre: '',
-    selectedDisciplines: null,
-    selectedProfessors: null,
-    //reviewColors: ['red', '#DC143C', 'green', 'blue'],
+    disciplinaSelecionada: null,
+    professorSelecionado: null,
     reviewColors: {
       veryBad: 'red',
       bad: '#DC143C',
       good: 'green',
       veryGood: 'blue'
     },
-    professors: [],
-    disciplines: [],
+    professores: [],
+    disciplinas: [],
     reviewTypes: [
       { name: 'Material Didático', value: '' },
       { name: 'Didática do professor', value: '' },
@@ -115,16 +114,16 @@ export default {
   async created() {
     try {
       const response = await api.getDisciplinas()
-      this.disciplines = response.data
+      this.disciplinas = response.data
     } catch (error) {
-      console.error('Error fetching disciplines:', error)
+      console.error('Error fetching disciplinas:', error)
     }
 
     try {
       const response = await api.getProfessores()
-      this.professors = response.data
+      this.professores = response.data
     } catch (error) {
-      console.error('Error fetching professors:', error)
+      console.error('Error fetching professores:', error)
     }
   },
   mounted() {
@@ -144,21 +143,19 @@ export default {
 
     async submitForm() {
       const formData = {
-        disciplinaId: this.selectedDisciplines,
-        professorId: this.selectedProfessors,
+        disciplinaId: this.disciplinaSelecionada,
+        professorId: this.professorSelecionado,
         anoSemestre: this.anoSemestre,
         materialDidatico: this.reviewTypes.find((type) => type.name === 'Material Didático').value,
         didaticaProfessor: this.reviewTypes.find((type) => type.name === 'Didática do professor')
           .value,
         metodoAvaliativo: this.reviewTypes.find((type) => type.name === 'Método avaliativo').value,
         monitoria: this.reviewTypes.find((type) => type.name === 'Monitoria').value,
-        horasSemanais: this.disciplineHours,
-        presencaAtividades: this.disciplinePresence,
+        horasSemanais: this.horasSemanais,
+        presencaAtividades: this.presencaAtividades,
         comentariosGerais: this.comentariosGerais,
         comentariosAvaliacao: this.comentariosAvaliacao
       }
-
-      console.log(formData)
 
       try {
         const response = await api.postAvaliacao(formData)
