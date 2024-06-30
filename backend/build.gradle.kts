@@ -26,6 +26,7 @@ dependencies {
     implementation("io.ktor:ktor-serialization:2.3.11")
     implementation("io.ktor:ktor-server-cors:2.3.11")
     testImplementation("io.ktor:ktor-server-tests:2.3.11")
+    implementation("io.github.cdimascio:dotenv-kotlin:6.4.1")
 
     // Exposed framework
     implementation("org.jetbrains.exposed:exposed-core:0.38.2")
@@ -36,16 +37,14 @@ dependencies {
     implementation("org.postgresql:postgresql:42.3.3")
 
 
-    testImplementation("org.jetbrains.exposed:exposed-core:0.38.2")
-    testImplementation("org.jetbrains.exposed:exposed-dao:0.38.2")
-    testImplementation("org.jetbrains.exposed:exposed-jdbc:0.38.2")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.7.0")
+    testImplementation(kotlin("test"))
+
 }
 
 tasks.test {
     useJUnitPlatform()
 }
+
 kotlin {
     jvmToolchain(20)
 }
